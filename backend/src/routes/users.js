@@ -20,7 +20,7 @@ router.get('/api/users', async (req, res) => {
                             res.status(400).json(err.message);
                         } else {
 
-                            res.status(200).json({users: results.rows});
+                            res.status(200).json({ users: results.rows });
 
                         }
                     });
@@ -38,8 +38,6 @@ router.get('/api/users', async (req, res) => {
 
 
 router.get('/api/users/create', async (req, res) => {
-    let ind_error = false;
-    let message_error = "";
     try {
         await connection.connect(async (err, client, done) => {
             try {
@@ -55,18 +53,11 @@ router.get('/api/users/create', async (req, res) => {
 
                         await client.query(query, async (err, results) => {
                             if (err) {
-                                ind_error = true;
-                                message_error = err.message;
+                                throw new Error(err.message);
                             }
                         });
                     }
-
-                    if (ind_error) {
-                        res.status(400).json(message_error);
-                    } else {
-                        res.status(200).json({ message: "5 Usuarios creados" });
-                    }
-
+                    res.status(200).json({ message: "5 Usuarios creados" });
                 }
             } finally {
                 done();
